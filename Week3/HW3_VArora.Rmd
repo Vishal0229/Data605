@@ -1,0 +1,72 @@
+---
+title: "HW3"
+author: "Vishal Arora"
+date: "September 14, 2019"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+#Problem SET 1                    
+
+## Question 1:- What is the rank of the matrix A?                    
+
+Ans :- The rank of a matrix is defined as                        
+      (a) the maximum number of linearly independent column vectors in the matrix or                    
+      (b) the maximum number of linearly independent row vectors in the matrix. Both definitions are quivalent.                  
+```{r}
+
+A <- matrix(c(1,-1,0,5,2,0,1,4,3,1,-2,-2,4,3,1,-3),nrow=4,ncol=4)
+
+4
+# Calculating rank of Matrix by using rankMatrix function of Matrix package.
+require(Matrix)
+
+rankMatrix(A)[1]
+
+
+
+```
+Both  Answers match , hence Rank of matrix A is 4. As it is a full matrix and all 4 rows/columns are linearly independent of each other hence Rank is 4.                     
+
+## Question 2:- Given an mxn matrix where m > n, what can be the maximum rank? The minimum rank, assuming that the matrix is non-zero?   
+
+Answer :- a) The maximum Rank for m * n where m>n will be n if all the n columns are linerar independent.                             
+          b) Minimum Rank for m *n where m >n will be 1 as the matrix is non-zero so it will have 1 linear   
+             independent columns.                     
+             
+## Question 3:- What is the rank of matrix B?
+
+Answer :- The RANK of matrix B is 1, as row 2 is equal to row1 * 3 . And row 3 is equal to row 1 times 2. Hence we have only one linear independent row. Hence Rank is 1. Next step we will calculate the rank of matrix B using r function rankMatrix to prove it. 
+```{r}
+B <- matrix (c(1,3,2,2,6,4,1,3,2),nrow=3, ncol=3)
+rankMatrix(B)[1]
+```
+Hence proved that Rank of B is 1.
+
+# Problem SET 2
+
+## Question  :-
+             
+Answer :- Answer by hand is attached as pdf(Solution_Problem_Set_HW3.pdf to cuny hw  submission site) , herein R we will try to prove the same with r functions.
+```{r}
+library(pracma)
+A <- matrix(c(1,0,0,2,4,0,3,5,6),nrow=3,ncol=3)
+A
+charpoly(A)
+
+
+```
+The values prove that our Charcteristic polynomial is correct.
+
+```{r}
+e <- eigen(A)
+e$values
+```
+This proves our eigen values are also correct
+
+```{r}
+e$vectors
+```
+
+This proves our eigen vector values are also correct.     
