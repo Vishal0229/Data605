@@ -1,0 +1,111 @@
+---
+title: "HW5"
+author: "Vishal Arora"
+date: "September 28, 2019"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# HW5
+
+## Choose independently two numbers B and C at random from the interval [0, 1] with uniform density. Prove that B and C are proper probability distributions.Note that the point (B,C) is then chosen at random in the unit square. 
+
+##Find the probability that                    
+
+(a) B + C < 1/2.                     
+(b) BC < 1/2.                                        
+(c) |B - C| < 1/2.                                             
+(d) max{B,C} < 1/2.                                  
+(e) min{B,C} < 1/2.                                    
+
+
+
+Q :- Prove that B and C are proper probability distributions
+```{r}
+# A probability distribution is a statistical function that describes all the possible values and likelihoods that a random variable can take within a given range. This range will be between the minimum and maximum statistically possible values.
+
+n <- 10000
+B <- as.data.frame(runif(n, min=0, max=1))
+C <- as.data.frame(runif(n, min=0, max=1))
+
+
+
+min(B)
+max(B)
+
+# checking the skewness of B
+hist(B[,1], prob=TRUE, ylim=c(0,1.5), main = 'Histogram of B', xlab = '')
+
+
+min(C)
+max(C)
+#checking skewness of C
+hist(C[,1], prob=TRUE, ylim=c(0,1.5), main = 'Histogram of B', xlab = '')
+
+
+
+j = 0
+for(i in 1:length(B)){
+  if(B[i]+C[i] < 0.5){
+    j = j+1
+  }
+}
+print(paste("The Probabilty B+C < 1/2 =", j/length(B)))
+
+
+```
+
+As we can see bins of both the histogram are evenly distributed, B & C is proper probability distributions.
+
+
+(a)
+```{r}
+a <- sum((B+C) < .5)/n
+print(paste("The probability of B+C less than 1/2 is",a))
+```
+
+(b)
+```{r}
+b <- (sum((B*C) < .5)/n)
+print(paste("The probability of B*C less than 1/2 is",b))
+```
+
+(c) 
+```{r}
+c <- sum(abs((B-C)) < .5)/n
+print(paste("The probability of |B-C| be less than 1/2 is",c))
+```
+
+(d)
+```{r}
+d <- 1
+B <- runif(n, min=0, max=1)
+C <- runif(n, min=0, max=1)
+for(i in 1:length(B)){
+  if(max(B[i], C[i]) < 0.5){
+    d = d + 1
+  }
+}
+d <- d/10000
+print(paste("The probability of max{B,C} less than 1/2 is",d))
+```
+
+(e)
+```{r}
+e <- 1
+B <- runif(n, min=0, max=1)
+C <- runif(n, min=0, max=1)
+for(i in 1:length(B)){
+  if(min(B[i], C[i]) < 0.5){
+    e = e + 1
+  }
+}
+e <- e/10000
+print(paste("The probability of min{B,C} less than 1/2 is",d))
+```
+
