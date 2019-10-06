@@ -1,0 +1,189 @@
+---
+title: "Data 605 - HW 6"
+author: "Vishal Arora"
+date: "October 5, 2019"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+
+## Q1:- A box contains 54 red marbles, 9 white marbles, and 75 blue marbles. If a marble is randomly selected from the box, what is the probability that it is red or blue? Express your answer as a fraction or a decimal number rounded to four decimal places.                              
+
+```{r}
+#probability of having red marble getting selected 
+p_red <- 54/(54+9+75)
+# probability of blue marble getting selected .
+p_blue <- 75/(54+9+75)
+
+# pr0bability of either red or blue marble getting selected 
+p_red_blue <- p_red + p_blue
+
+round(p_red_blue,4)
+
+```
+## Q2:- You are going to play mini golf. A ball machine that contains 19 green golf balls, 20 red golf balls, 24 blue golf balls, and 17 yellow golf balls, randomly gives you your ball. What is the probability that you end up with a red golf ball?/ Express your answer as a simplified fraction or a decimal rounded to four decimal places.           
+```{r}
+#probablitiy of getting red ball out of all balls. 
+p_red <- round(20/(20+24+17+19),4)
+
+p_red
+
+
+# To prove it programmtically we can run a sample(10k) and select radomly only red ball and calculate the check if probabilty comes close by what we calculated above.
+
+golf_balls <- vector()
+golf_balls[1:19] <- "G" # first 19 balls are GREEN
+golf_balls[20:39] <- "R" # next 20 balls are RED
+golf_balls[40:63] <- "B" # next 24 balls are BLUE
+golf_balls[64:80] <- "Y" # next 17 balls are YELLOW
+
+
+findProb <- function(x,sam_size){
+   count <- 0
+   for(i in 1:sam_size){
+     selected_ball <- sample(golf_balls,1,replace=TRUE)
+     #print(selected_ball)
+     if(!is.na(selected_ball) && x == selected_ball){
+        count <- count+1
+     }
+   }
+   # probability of finding x from sample size of sam_size is 
+     return (count/sam_size)
+}
+
+n<- 10000
+findProb("R",n)
+
+```
+
+## Q3 :- A pizza delivery company classifies its customers by gender and location of residence. The research department has gathered data from a random sample of 1399 customers. The data is summarized in the table below.
+```{r}
+data.frame(Housing= c("Apartment","Dorm","With Parent(s)","Sorority/Fraternity House","Other"),Males= c(81,116,215,130,129),Females= c(228,79,252,97,72))
+```
+
+### What is the probability that a customer is not male or does not live with parents? Write your answer as a fraction or a decimal number rounded to four decimal places.
+
+```{r}
+#P(!Male ???!LWP)=P(!Male)+P(!LWP)???P(!Male ??? !LWP)  where
+# !M = not male
+# !P = not living with parents
+
+#finding probability of not male
+p_not_male <-  round((228+79+252+97+72)/1399,4) 
+p_not_male
+
+#finding probability of male+female not living with parents
+p_notLiving_parents <- round((81+116+130+129+228+79+97+72)/1399,4)
+p_notLiving_parents
+
+#finding probability of females not living with parents as that is to be deducted as it is calcuated twice(i.e. intersection).
+p_female_NLWP <- round((228+79+97+72)/1399,4)
+p_female_NLWP
+
+
+#putting into the  P(!Male ???!LWP)=P(!Male)+P(!LWP)???P(!Male ??? !LWP) 
+
+prob_notM_notLWP <- p_not_male + p_notLiving_parents - p_female_NLWP
+
+prob_notM_notLWP
+```
+
+## Q4 :- Determine if the following events are independent.
+## Going to the gym. Losing weight.                               
+
+Ans :-  Dependent.                             
+
+## Q5 :- A veggie wrap at City Subs is composed of 3 different vegetables and 3 different condiments wrapped up in a tortilla. If /there are 8 vegetables, 7 condiments, and 3 types of tortilla available, how many different veggie wraps can be made?   
+
+```{r}
+# Using C(n,k)=n!(n???k)!k!
+# use factorial or choose function of r 
+tot_no <- choose(8,3) * choose(7,3) * choose(3,1)
+tot_no
+```
+## Q6 :- Determine if the following events are independent.                                                                 Jeff runs out of gas on the way to work. Liz watches the evening news.                      
+
+Ans:- Indepedent
+
+## Q7 :- The newly elected president needs to decide the remaining 8 spots available in the cabinet he/she is appointing. If there are 14 eligible candidates for these positions (where rank matters), how many different ways can the members of the cabinet be appointed?               
+
+```{r}
+factorial(14)/factorial(14-8)
+```
+## Q8:- A bag contains 9 red, 4 orange, and 9 green jellybeans. What is the probability of reaching into the bag and randomly withdrawing 4 jellybeans such that the number of red ones is 0, the number of orange ones is 1, and the number of green ones is 3? Write your answer as a fraction or a decimal number rounded to four decimal places.              
+```{r}
+round(choose(9,0)*choose(4,1)*choose(9,3)/choose(22,4),4)
+```
+## Q9:- Evaluate the following expression. 11!/7!
+```{r}
+factorial(11)/factorial(7)  # 11*10*8*7*6*5*4*3*2*1/ 7*6*5*4*3*2*1 = 11*10*9*8=7920
+```
+
+## Q10:- Describe the complement of the given event.                                                                        67% of subscribers to a fitness magazine are over the age of 34.                              
+
+Ans :- This means that 1-(.67) = .33% i.e. 33% users under ages 34 are subscribers to fitness magazine.                            
+
+## Q11:-   If you throw exactly three heads in four tosses of a coin you win $97. If not, you pay me $30.                     Step 1. Find the expected value of the proposition. Round your answer to two decimal places.                       Step 2. If you played this game 559 times how much would you expect to win or lose? (Losses must be entered as negative.)
+```{r}
+#STEP 1:-
+# First calculate the probability of 3 heads of 4 toss with probability of heads truning up for each coin flip is 0.5
+prob_win <- dbinom(3, size = 4, prob = 0.5)  
+prob_loss <- 1-prob_win
+
+prop_val <- round(97*prob_win - 30*prob_loss,2)
+print(paste("Expected probability to win is :- ",prop_val))
+
+#STEP2 
+round(559*prop_val,2)
+```
+
+## Q12:-   Flip a coin 9 times. If you get 4 tails or less, I will pay you $23. Otherwise you pay me $26.                     Step 1. Find the expected value of the proposition. Round your answer to two decimal places.                       Step 2. If you played this game 994 times how much would you expect to win or lose? (Losses must be entered as negative.)
+
+```{r}
+# STEP1 
+prob_win <- pbinom(4, size = 9, prob = 0.5)  
+prob_loss <- 1-prob_win
+
+prop_val <- round(23*prob_win - 26*prob_loss,2)
+print(paste("Expected probability to win is :- ",prop_val))
+
+#STEP2 
+round(994*prop_val,2)
+```
+## Q13:- The sensitivity and specificity of the polygraph has been a subject of study and debate for years. A 2001 study of the use of polygraph for screening purposes suggested that the probability of detecting a liar was .59 (sensitivity) and that the probability of detecting a "truth teller" was .90 (specificity). We estimate that about 20% of individuals selected for the screening polygraph will lie.
+
+```{r}
+# Calculating the False Positives , True positive ,False Negative & True Negative values
+
+sensitivity <- 0.59
+specificiity <- 0.90
+p_liar <- 0.2
+p_truth <- 1-p_liar 
+p_detect_liar <- sensitivity * p_liar
+p_detect_truth <- specificiity * p_truth
+p_false_detect_liar <- (1-sensitivity)*p_liar
+p_false_detect_truth <- (1-specificiity)*p_truth
+
+
+```
+
+
+### a. What is the probability that an individual is actually a liar given that the polygraph detected him/her as such? (Show me the table or the formulaic solution or both.)
+```{r}
+round(p_detect_liar /(p_detect_liar + p_false_detect_truth),4)
+```
+
+### b. What is the probability that an individual is actually a truth-teller given that the polygraph detected him/her assuch? (Show me the table or the formulaic solution or both.)
+```{r}
+round(p_detect_truth / (p_detect_truth + p_false_detect_liar),4)
+
+```
+
+### c. What is the probability that a randomly selected individual is either a liar or was identified as a liar by the polygraph? Be sure to write the probability statement
+
+Ans :- P(A???B)=P(A)+P(B)???P(A???B) i.e P(Liar???Detected) = P(Liar) + P(Detected) - P(Liar ??? Detected)
+```{r}
+p_liar + (p_detect_liar+p_false_detect_truth) - (p_detect_liar)
+```
+
