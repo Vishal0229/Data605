@@ -1,0 +1,113 @@
+---
+title: "Data 605 HW 7"
+author: "Vishal Arora"
+date: "October 12, 2019"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+## Q1 :- Let X1, X2, . . . , Xn be n mutually independent random variables, each of which is uniformly distributed on the integers from 1 to k. Let Y denote the minimum of the Xi's. Find the distribution of Y.
+
+Ans :- 
+We are given that Y denotes the minimum of the Xis. Suppose each independent random variable Xi has k possibilities.                     
+
+Suppose that each Xi has k possibilities: 1, 2, ..., k. Then, the total possible number of assignments for the entire collection of random variables X1, X2, ..., Xn is (k)^n . This will form the denominator for our probability distribution function.                                       
+
+The number of ways of getting Y = 1 is k^n - (k - 1)^n / k^n, since k^n represents the total number of options and (k-1)^n   represents all of the options where none of the Xi's are equal to 1.                                         
+
+When X = 1:                      
+P(X=1) = k^n - (k-1)^n / k^n                      
+
+Similarly When X= 2 & 3:                            
+P(X=2) = (k-2+1)^n - (k-2)^n / k^n                                 
+P(X=3) = (k-3+1)^n - (k-3)^n / k^n                                       
+
+Generalization this for (X=m):                                                  
+P(X=m) = (k-m+1)^n - (k-m)^n * k^n                                      
+
+
+## Q2:-Your organization owns a copier (future lawyers, etc.) or MRI (future doctors). This machine has a manufacturer's expected lifetime of 10 years. This means that we expect one failure every ten years. (Include the probability statements and R Code for each part.).                                                          
+
+
+### a) What is the probability that the machine will fail after 8 years?. Provide also the expected value and standard deviation. Model as a geometric. (Hint: the probability is equivalent to not failing during the first 8 years..)                                
+
+```{r}
+p_fail <- 1/10 
+n= 8
+p_notfail <- 1-p_fail
+
+prob_geom  <- 1-pgeom(n-1, p_fail) 
+prob_geom
+
+#Expected value 
+expec_val <- 1/p_fail
+expec_val
+
+#Standard Deviation
+SD <- sqrt(p_notfail/(p_fail^2))
+SD 
+
+```
+
+### b) What is the probability that the machine will fail after 8 years?. Provide also the expected value and standard deviation. Model as an exponential.                                        
+
+```{r}
+n <- 8 
+lambda <- 1/10
+
+p_expo <- pexp(n, lambda, lower.tail=FALSE)
+round(p_expo,2)
+
+#Expected value = 1/lambda
+expec_val <- 1/lambda
+expec_val
+
+#SD = 1/??^2
+SD <- sqrt(1/lambda^2)
+SD 
+```
+
+### c) :- What is the probability that the machine will fail after 8 years?. Provide also the expected value and standard deviation. Model as a binomial. (Hint: 0 success in 8 years)
+
+(n Choose k) p^k * (1-p)^(n???k) 
+```{r}
+n <- 8
+p <- 1/10
+q <- (1-p)
+k <- 0
+
+
+p_binomial <- dbinom(k, n, p)
+p_binomial
+
+
+#Expected value
+exp_val <- n * p
+exp_val
+
+
+# Standard deviation
+sd_bino <- sqrt(n*p*q) 
+sd_bino
+```
+
+### d) What is the probability that the machine will fail after 8 years?. Provide also the expected value and standard deviation. Model as a Poisson.
+
+```{r}
+#Since average number of failures in every 10 years is 1 so average number of failures in 8 years will be:
+
+lambda <- 8/10
+k <- 0
+
+ppois(0,lambda = .8 )
+
+#Expected value 
+exp_val <- 8/10
+exp_val
+
+# Standard deviation
+SD <- sqrt(8/10)
+SD
+```
+
