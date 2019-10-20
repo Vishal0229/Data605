@@ -1,0 +1,70 @@
+---
+title: "HW8"
+author: "Vishal Arora"
+date: "October 19, 2019"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+## Company buys 100 lightbulbs, each of which has an exponential lifetime of 1000 hours. What is the expected time for the first of these bulbs to burn out?
+
+
+```{r}
+n  <- 1000
+lbulbs <- 100
+
+# The distribution of the minimum value of n independent expontially distributed variables with mean ?? would also be exponential with mean ??(mean)/n(# of items)
+
+b <- n/lbulbs 
+b 
+```
+
+## Assume that X1 and X2 are independent random variables, each having an exponential density with parameter lambda.  Show that Z = X1-X2 has density .  
+$$fZ(z)=(\frac { 1 }{ 2 } )\lambda { e }^{ \lambda -|z| }$$
+
+
+Ans :-
+
+Both X1 and X2 are evaluated on the interval $$0\le x<\infty.$$  
+
+$$ 1) When\quad X2 \ge X1$$
+
+$$\int _{ 0 }^{ \infty  }{ { fX }^{ (x) }{ fY }^{ x-z }dx }$$
+$$\int _{ 0 }^{ \infty  }{ { \lambda e }^{ -\lambda x }{ \lambda e }^{ -\lambda (x???z) } } dx$$
+$${\lambda e}^{\lambda z}\int _{ 0 }^{ \infty  }{ { \lambda e }^{ -2\lambda x } } dx$$
+$${ \lambda e }^{ \lambda z }(\frac { -1 }{ 2 } { e }^{ -2\lambda x })$$
+$$fZ(z)=\frac { \lambda }{ 2 } { e }^{ \lambda z }$$
+$$2) When\quad X1 \ge X2$$
+
+$$fZ(z)=\frac { \lambda }{ 2 } { e }^{ -\lambda z }$$
+$$fZ(z)=\frac { \lambda }{ 2 } { e }^{ -\lambda |z| }$$
+## Let X be a continuous random variable with mean ?? = 10 and variance ??2 = 100/3. Using Chebyshev's Inequality, find an upper bound for the following probabilities.
+
+ pX = var / e^2
+
+ a) P(|X-10|>=2)  
+```{r}
+var  <- 100/3
+e <- 2^2
+var/e
+```
+ 
+b) P(|X-10|>=5)
+```{r}
+e<- 5^2
+var/e
+```
+c) P(|X-10|>=9)
+```{r}
+e <-9^2
+var/e
+```
+
+d) P(|X-10|>=20)
+
+```{r}
+e <- 20^2
+var/e
+```
+
