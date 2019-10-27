@@ -1,0 +1,70 @@
+---
+title: "HW9"
+author: "Vishal Arora"
+date: "October 26, 2019"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+## Q 1. The price of one share of stock in the Pilsdorff Beer Company (see Exercise 8.2.12) is given by Yn on the nth day of the year. Finn observes that the differences Xn = Yn+1 ??? Yn appear to be independent random variables with a common distribution having mean = 0 and variance VAR = 1/4. If Y1 = 100, estimate the probability that Y365 is
+(a) >= 100.
+
+```{r}
+pnorm(100 - 100, mean = 0, sd = sqrt(91.25), lower.tail = FALSE)
+```
+
+(b) >= 110.    
+```{r}
+pnorm(110 - 100, mean = 0, sd = sqrt(91.25), lower.tail = FALSE)
+```
+
+(c) >= 120.                      
+
+```{r}
+pnorm(120 - 100, mean = 0, sd = sqrt(91.25), lower.tail = FALSE)
+```
+
+## Q 2. Calculate the expected value and variance of the binomial distribution using the moment generating function.
+
+$$g(t)=\sum _{ j=0 }^{ n }{ { e }^{ tj } } (n!/(n-j)!j!){ p }^{ j }{ q }^{ n-j }$$
+$$g(t)=\sum _{ j=0 }^{ n }{ (n!/(n-j)!j!) } { { (pe }^{ t }) }^{ j }{ q }^{ n-j }$$
+$$g(t)={ ({ pe }^{ t }+q) }^{ n }$$
+$$g'(t)=n{ ({ pe }^{ t }+q) }^{ n-1 }{ pe }^{ t }$$
+
+$$g''(t)=n(n-1)({ pe }^{ t }+q){ ({ pe }^{ t }) }^{ 2 }+n{ ({ pe }^{ t }+q) }^{ n }{ pe }^{ t }  $$
+$$g'(0)={ n(p+q) }^{ n-1 }p=np$$
+$$g''(0)=\quad { n(n-1)(p+q) }^{ n-1 }{ p }^{ 2 }+{ n(p+q) }^{ n }p$$
+$$g''(0)=n(n-1){ p }^{ 2 }+np$$
+$$\mu ={ \mu  }_{ 1 }=g'(0)=np$$
+$${ \sigma  }^{ 2 }={ \mu  }_{ 2 }-{ \mu  }_{ 1 }^{ 2 }1=g''(0)-{ g'(0) }^{ 2 }\\ { \sigma  }^{ 2 }=n(n-1){ p }^{ 2 }+np-{ (np) }^{ 2 }\\ { \sigma  }^{ 2 }=np[(n-1)p+1-np]\\ { \sigma  }^{ 2 }=np[(np-p)+1-np]$$
+$${ \sigma  }^{ 2 }=np[1-p]$$
+## Q 3.Calculate the expected value and variance of the exponential distribution using the moment generating function.
+
+The exponential distribution probability density function is:
+
+$$\lambda { e }^{ -\lambda x }$$
+Moment generating function for the binomial distribution is:
+
+$$g(t)=\frac { \lambda }{ \lambda-t } \quad for\quad t<\lambda$$
+
+First Derivative,
+
+$$g'(t)=\frac {\lambda }{ { (\lambda-t) }^{ 2 } } $$
+Determining mean ??1, by evaluating for t=0,
+
+$$g'(0)=\frac { 1 }{\lambda} $$
+
+
+Second Derivative,
+
+$$g''(t)=\frac { 2{\lambda }{ { ({\lambda-t) }^{ 3 } } $$
+Determining ??2, by evaluating for t=0,
+
+$$g''(0)=\frac { 2 }{ { \lambda  }^{ 2 } } } $$
+
+variance is
+
+$${ \mu  }^{ 2 }-{ \mu  }_{ 1 }^{ 2 }=\frac { 2 }{ { \lambda  }^{ 2 } } -{ (\frac { 1 }{ \lambda  } ) }^{ 2 }=\frac { 2 }{ \lambda ^{ 2 } } -\frac { 1 }{ \lambda ^{ 2 } } =\frac { 1 }{ \lambda ^{ 2 } }  $$
+
+
