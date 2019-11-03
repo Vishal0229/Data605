@@ -1,0 +1,61 @@
+---
+title: "Data 605-HW 10"
+author: "Vishal Arora"
+date: "November 2, 2019"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+
+## Smith is in jail and has 1 dollar; he can get out on bail if he has 8 dollars. A guard agrees to make a series of bets with him. If Smith bets A dollars, he wins A dollars with probability .4 and loses A dollars with probability .6. Find the probability that he wins 8 dollars before losing all of his money if
+
+
+### (a) he bets 1 dollar each time (timid strategy).
+
+$$P = \frac { 1-{ (\frac { q }{ p } ) }^{ s } }{ 1-{ (\frac { q }{ p } ) }^{ M } }  $$
+
+$$P = \frac { 1-{ (\frac { 0.6 }{ 0.4 } ) }^{ 1 } }{ 1-{ (\frac { 0.6 }{ 0.4 } ) }^{ 8 } }  $$
+Which amounts to 0.02
+
+```{r}
+
+
+
+q=0.6
+p=0.4
+s=1
+M=8
+
+
+P_timid = c()
+for (i in s:M) {
+  P_timid[i] = round((1-(q/p)^i)/(1-(q/p)^M), 4)
+}
+
+P_timid
+
+```
+
+hence P_timid = 0.0203
+
+### (b) he bets, each time, as much as possible but not more than necessary to bring his fortune up to 8 dollars (bold strategy).
+
+This can be solved using binomial  distrubution also, As smith has one dollar and he will bet it and will lose or gain whatever he bets i.e. first time if he will bet  $1 and if he wins he will have 2 dollars  and to achieve 8 dollars for his release he will bet next $2 and if he wins then he will have $4 and then next time he will bet $4 and if he wins he will have $8 required for this release. Thus Smith has to win in sequence of 1,2,4,8.  Thus smith has to win 3 times in row to secure $8 for his release.
+
+```{r}
+
+dbinom(3,3,0.4)
+
+# anothwer way is 
+
+p^3
+
+
+```
+ Thus by P_bold strategy approach he will have a probability of 0.064 , slight increase from P_timid but still an increase.
+
+
+### (c) Which strategy gives Smith the better chance of getting out of jail?
+
+Smith has got slight better through P_bold approach than P_timid approach.
