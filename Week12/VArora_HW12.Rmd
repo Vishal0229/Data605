@@ -1,0 +1,232 @@
+---
+title: "HW 12"
+author: "Vishal Arora"
+date: "November 17, 2019"
+output:
+  pdf_document: default
+  html_document: default
+---
+## The attached who.csv dataset contains real-world data from 2008. The variables included follow.               
+Country: name of the country                  
+LifeExp: average life expectancy for the country in years                 
+InfantSurvival: proportion of those surviving to one year or more                 
+Under5Survival: proportion of those surviving to five years or more              
+TBFree: proportion of the population without TB.                   
+PropMD: proportion of the population who are MDs                  
+PropRN: proportion of the population who are RNs                                            
+PersExp: mean personal expenditures on healthcare in US dollars at average exchange rate                    
+GovtExp: mean government expenditures per capita on healthcare, US dollars at average exchange rate              
+TotExp: sum of personal and government expenditures.                         
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(GGally)
+library(olsrr)
+```
+
+
+
+```{r}
+# read data using read.csv function from github.
+who_df <- read.csv("https://raw.githubusercontent.com/Vishal0229/Data605/master/Week12/who.csv", header =T)
+
+knitr::kable(head(who_df))
+#Summarizing the data before treating for any missing/null values in dataset.
+summary(who_df)
+
+## Let's check for any missing values in the data
+colSums(is.na(who_df))
+```
+
+It looks that there no NULL values in our datase, hence we are good to use the dataset as it is.
+
+### 1) Provide a scatterplot of LifeExp~TotExp, and run simple linear regression. Do not transform the variables. Provide and interpret the F statistics, R^2, standard error,and p-values only. Discuss whether the assumptions of simple linear regression met.                  
+```{r}
+## using ggpairs function of GGally package
+df <- select(who_df,"LifeExp","TotExp")
+ggpairs(df,columns=1:2,title="WHO")
+
+```
+ From the above diagram we can see that the correleation between LifeExp & TotExp variables is 0.508 which means that the 2 variables don't have a strong relationship between themselves but it is ok hence we can check if by adding any other variable the correlation increases. Scatter lot tells us that the relationship is not linear between the 2 variables.
+ 
+
+```{r}
+lm1 <- lm(LifeExp ~ TotExp,data = df)
+summary(lm1)
+
+#par(mfrow=c(2,2))
+#plot(lm1)
+hist(lm1$residuals)
+qqnorm(lm1$residuals);
+qqline(lm1$residuals)
+
+
+```
+F-Statistic:-          
+This test statistic tells us if there is a relationship between the dependent and independent variables we are testing. Generally, a large F indicates a stronger relationship.In our case the value is 65.26 which not too good not too bad but signifies that there is a relation between the variables.               
+
+R^2 :-   
+The R2 value is a measure of how close our data are to the linear regression model. R2 values are always between 0 and 1; numbers closer to 1 represent well-fitting models. R2 always increases as more variables are included in the model, and so adjusted R2 is included to account for the number of independent variables used to make the model. In our case the value is only 0.2577 which tells that the models accounts for only 25.77% of varition in the data and it might not be a good fit as alone vriable hence we need to find other variable(s) which in conjunction to the said predictor(TotExp) variable can account of higher number of varaiblity in the data.              
+Std Error :-                  
+The coefficient standard errors tell us the average variation of the estimated coefficients from the actual average of our response variable. Which in our case is way to high.                                     
+
+p-value is used for rejecting or accpeting the Null hypothesis, if we form a hypothesis                 
+
+$${ H }_{ 0 }\quad :\quad LfeExp\quad \& \quad TotExp\quad variables\quad are\quad not\quad related\quad to\quad each\quad other.$$       
+ $${ H }_{ A }\quad :\quad LfeExp\quad \& \quad TotExp\quad variables\quad have\quad some\quad relation\quad with\quad each\quad other.$$   
+P-value:-                                                   
+The larger the t statistic, the smaller the p-value. Generally, we use 0.05 as the cutoff for significance; when p-values are smaller than 0.05, we reject H0. In our case p-values are smaller than 0.05, hence we can reject Null hypothesis . Thus there is some relationship between the 2 variables.  
+
+
+Lookging at the histogram & QQ Plot the residuals are clearly not normal or close to normal. Thus Thus the assumption is not met.                        
+
+
+To check the heteroscedasticity,  there are a couple of tests that comes handy to establish the presence or absence of heteroscedasticity - The Breush-Pagan test and the NCV test.
+
+> heteroskedasticity occurs when the variance for all observations in a data set are not the same. Conversely, when the variance for all observations are equal, we call that homoskedasticity .
+Null hypothesis that heteroskedasticity is not present (i.e. homoskedastic) against the, Alternative hypothesis that heteroskedasticity is present.
+
+```{r}
+lmtest::bptest(lm1)
+
+car::ncvTest(lm1)
+```
+Both these test have a p-value greater that a significance level of 0.05, thus we can reject alternate hypothesis. But looking at the other paramteresthis model can be improved either with the addition of more variables on Indepdendent axis or by trying out tranformation . 
+
+### Raise life expectancy to the 4.6 power (i.e., LifeExp^4.6). Raise total expenditures to the 0.06 power (nearly a log transform, TotExp^.06). Plot LifeExp^4.6 as a function of TotExp^.06, and r re-run the simple regression model using the transformed variables. Provide and interpret the F statistics, R^2, standard error, and p-values. Which model is "better?"
+
+```{r}
+df_trans1 <- data.frame(df$LifeExp^4.6,df$TotExp^0.06)
+
+head(df_trans1)
+
+ggpairs(df_trans1,columns=1:2,title="WHO Tranformed")
+```
+Now we can clearly see that after transfrming the variables the correlation between the variables has increased to 0.854  and also the scatter plot shows a linear relation ship between the 2 tranformed variables.
+
+```{r}
+lm_trans1 <- lm(df_trans1$df.LifeExp.4.6 ~ df_trans1$df.TotExp.0.06, data=df_trans1)
+
+summary(lm_trans1)
+
+hist(lm_trans1$residuals)
+qqnorm(lm_trans1$residuals);
+qqline(lm_trans1$residuals)
+
+
+
+```
+
+F-statistics is 507.7 and adjusted R^2 is 0.7298, P-values both for F-statistics and TotExp_power is less than 0.05. Residual standard error is 90490000 but since variables are rescaled, thus to calculate standard error
+
+```{r}
+90490000^(1/4.6)
+```
+the standard error value come out to be 53.66557
+
+Looking at the Histogram , it looks more normal distributed there is slight left skewness which is very minimal in comparson to model1(lm1).           
+
+Even the QQ plot shows the same that majority of the dataset in  ormally distributed with slight skewness on the left.            
+
+Checking the heteroskedasticity for model2  i.e. lm_trans1
+```{r}
+lmtest::bptest(lm_trans1)
+
+car::ncvTest(lm_trans1)
+```
+
+In Model 2 also heteroskedasticity is not present as per theBreusch-Pagan & NCV test.
+
+Hence we can say that Model2(lm_trans1) after transformation is a very far improved model in comparison to model1(lm1).
+
+
+### Using the results from 3, forecast life expectancy when TotExp^.06 =1.5. Then forecast life expectancy when TotExp^.06=2.5
+
+```{r}
+TransModel3_compute <- function(x)
+  {  
+     # $$y={ \beta  }_{ 0 }\quad +\quad { \beta  }_{ 1 }x\quad +\quad \E .$$
+  
+     y <- -736527910 + 620060216 * (x)
+      y <- y^(1/4.6)
+    print(y)
+}
+
+
+TransModel3_compute(1.5)
+TransModel3_compute(2.5)
+```
+
+### Build the following multiple regression model and interpret the F Statistics, R^2, standard error, and p-values. How good is the model?                                                                                LifeExp = b0+b1 x PropMd + b2 x TotExp +b3 x PropMD x TotExp
+
+```{r}
+
+
+lm3 <- lm(LifeExp ~ PropMD+TotExp+(PropMD*TotExp), data=who_df)
+summary(lm3)
+
+hist(lm3$residuals);
+qqnorm(lm3$residuals);
+qqline(lm3$residuals)
+```
+
+
+The adj R2 accounts for 0.3471 of the variability of the data, which means that only 34% of the variance in the response variable can be explained by the independent variable.Thus means that this model can be improved by either transforming or by  finding new predictor variables.
+
+The F-statistic value is quiet less which means that this model is not good for prediction.  and p-value indicate that we should reject the null hypothesis (H0), that there isn't a relationship between the variables.
+ 
+ The data does not resemble a normal distribution, as shown in the histogram  a hugh left skewness is there and the Q-Q pllots. The residuals do not appear to be centered around 0 from the residual plot.
+ 
+```{r}
+lmtest::bptest(lm_trans1)
+
+car::ncvTest(lm_trans1)
+```
+ 
+ Rejecting the Null hypothesis, thus there is no heteroskedasticity present in the model.
+ 
+ 
+### Forecast LifeExp when PropMD=.03 and TotExp = 14. Does this forecast seem realistic? Why or why not?
+
+```{r}
+options(scipen=999)
+coef(lm3)
+
+predictMod <- function(x,x1) 
+  {
+  y <- 62.77270325541+1497.49395251893*(x)+(0.00007233324*(x*x1))
+  return(y)
+}
+
+predictMod(0.03,14)
+
+
+```
+
+ This prediction is not a relatistic one, as we know by the initial summary of our WHO dataset the max life expectancy is 83 yrs, whereas as per the new predictions by our Model4 (LifeExp = b0+b1 x PropMd + b2 x TotExp +b3 x PropMD x TotExp)  is 107.6976 yrs which is not relaistic. Hence our model is not accurate and needs to be corrected, which can be taken up in next part as how to transform the variables to make the model more effective.                               
+ 
+ 
+ Using log & sqrt to model to see if they improve the ffectiveness.It seems both the tranformation are not accurate hence we might have to use some other techniques for better prediction.            
+```{r}
+lm5 <-  lm(log(LifeExp) ~ log(PropMD)+log(TotExp)+log(PropMD*TotExp), data=who_df)
+summary(lm5)
+
+lm6 <- lm(sqrt(LifeExp) ~ sqrt(PropMD)+sqrt(TotExp)+sqrt(PropMD*TotExp), data=who_df)
+summary(lm6)
+
+# using Model5 (i.e. lm5 ) which uses log to predict the values
+options(scipen=999)
+coef(lm5)
+logPredictMod <- function(x,x1) 
+  {
+  y <- 4.42154762+0.06074968*(x)
+  return(y)
+}
+
+logPredictMod(0.03,14)
+```
+ 
+ 
+ 
+ 
+ 
