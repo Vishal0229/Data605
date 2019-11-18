@@ -1,0 +1,146 @@
+---
+title: "DATA 605 Discussion 12"
+author: "Vishal Arora"
+date: "11/16/2019"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+options("scipen" = 10)
+```
+
+## Heart Disease
+
+Data Context : This database contains 76 attributes, but all published experiments refer to using a subset of 14 of them. In particular, the Cleveland database is the only one that has been used by ML researchers to this date. The "goal" field refers to the presence of heart disease in the patient. It is integer valued from 0 (no presence) to 4.
+
+Downladed from : https://www.kaggle.com/ronitf/heart-disease-uci
+
+The terms choosen are as follows:
+
+Dichotomous Term is sex (1 = male; 0 = female)                                                              Quadratic Term: Age Interaction sex vs. cholesterol (quantitative)
+
+### Read data
+```{r}
+heart <- read.csv("heart.csv",header=TRUE, sep=",")
+head(heart, 10)
+
+```
+
+### Apply Linear Model
+
+```{r}
+# Quadratic Term
+age2 <- heart$ï..age^2
+
+# Dichotomous vs. quantative 
+sx_chl <- heart$sex * heart$chol
+
+# first model
+modl <- lm(thalach ~ sex + ï..age
+ + age2 + cp + trestbps+fbs+restecg+exang+oldpeak+slope+ca+thal+target+ chol + sx_chl, heart)
+summary(modl)
+
+```
+
+### Using Backwards Elimination
+Removing variable with highest p value - one at a time. Starting with  sex:
+
+
+```{r}
+modl <- update(modl, .~. -sex)
+summary(modl)
+
+
+```
+#### Removing ca: number of major vessels
+```{r}
+modl <- update(modl, .~. -ca)
+summary(modl)
+
+```
+
+#### Remove age^2
+```{r}
+modl <- update(modl, .~. -age2)
+summary(modl)
+
+```
+
+### Remove: Sex vs Cholest.
+
+```{r}
+modl <- update(modl, .~. -sx_chl)
+summary(modl)
+
+```
+
+
+#### Remove fbs:fasting blood sugar
+
+```{r}
+modl <- update(modl, .~. -fbs)
+summary(modl)
+
+```
+
+#### Remove restecg: resting electrocardiographic results
+
+```{r}
+modl <- update(modl, .~. -restecg)
+summary(modl)
+
+```
+
+#### Remove oldpeak: ST depression induced by exercise relative to rest
+
+```{r}
+modl <- update(modl, .~. -oldpeak)
+summary(modl)
+
+
+```
+
+#### Remove thal: 3 = normal; 6 = fixed defect; 7 = reversable defect
+```{r}
+modl <- update(modl, .~. -thal)
+summary(modl)
+
+```
+
+#### Remove chol: cholesterol
+```{r}
+modl <- update(modl, .~. -chol)
+summary(modl)
+
+```
+
+#### Remove cp: chest pain type
+
+```{r}
+modl <- update(modl, .~. -cp)
+summary(modl)
+
+```
+
+### Plot
+
+```{r}
+plot(modl$fitted.values, modl$residuals, xlab="Fitted Values", ylab="Residuals", main="Residuals vs. Fitted")
+abline(h=0)
+
+qqnorm(modl$residuals)
+qqline(modl$residuals)
+
+```
+
+### Conclusion
+
+We included  5 variables in the final model that are used to predict the target variable, thalach: max heart rate achieved.
+
+The results show: - The residuals median is 2.408 which is not very close to zero, indicating  poor fit. - As  min and max are not similar values, this indicates variability is not consistent. - The `R^2` values explains only 37.43% of variability in the data - which again indicate  poor fit. - The normal q-q plot shows us that the residuals do not follow a normal distribution.
+
+So we may conclude this is as poorly fitted model.
+
