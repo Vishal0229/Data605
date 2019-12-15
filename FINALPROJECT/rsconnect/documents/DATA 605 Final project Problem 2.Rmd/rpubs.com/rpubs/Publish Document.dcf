@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/560267/47c11fae68da494f938d8aae1cf4649f
+bundleId: https://api.rpubs.com/api/v1/document/560267/47c11fae68da494f938d8aae1cf4649f
+url: http://rpubs.com/Vishal0229/560267
+when: 1576449709.652
